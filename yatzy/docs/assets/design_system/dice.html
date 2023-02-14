@@ -1,0 +1,55 @@
+.dice {
+  width: 100px;
+  height: 100px;
+  border: 2px solid black;
+  display: flex;
+  flex-wrap: wrap;
+  position: relative;
+  perspective: 1000px;
+  background-color: white;
+}
+
+.face {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transform-style: preserve-3d;
+  transition: transform 0.5s ease-in-out;
+}
+
+.one .dot {
+  width: 10px;
+  height: 10px;
+  background-color: black;
+  border-radius: 50%;
+}
+
+.two .dot {
+  width: 10px;
+  height: 10px;
+  background-color: black;
+  border-radius: 50%;
+  position: absolute;
+  top: 25px;
+  left: 25px;
+}
+
+.three .dot {
+  width: 10px;
+  height: 10px;
+  background-color: black;
+  border-radius: 50%;
+  margin: 5px;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.four .column .dot {
