@@ -3,15 +3,15 @@ class Dice {
     this.value = null;
   }
 
-  roll() {
-    this.value = Math.floor(Math.random() * 6) + 1;
-  }
+  roll(randomGenerator) {
+  this.value = randomGenerator(1, 6);
+}
 
-  static throw(numDices) {
+  static throw(numDices, randomGenerator) {
     const dices = [];
     for (let i = 0; i < numDices; i++) {
       const dice = new Dice();
-      dice.roll();
+      dice.roll(randomGenerator);
       dices.push(dice);
     }
     return dices;
