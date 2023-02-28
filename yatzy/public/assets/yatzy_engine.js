@@ -1,75 +1,72 @@
-const Dice = require("./dice");
+function calculateTurnScore(game, scoreType) {
+  let score = 0;
 
-class YatzyEngine {
-  constructor() {
-    this.dices = [];
-    for (let i = 0; i < 5; i++) {
-      this.dices.push(new Dice());
-    }
-    this.score = {
-      ones: null,
-      twos: null,
-      threes: null,
-      fours: null,
-      fives: null,
-      sixes: null,
-      bonus: null,
-      onePair: null,
-      twoPairs: null,
-      threeOfAKind: null,
-      fourOfAKind: null,
-      smallStraight: null,
-      largeStraight: null,
-      fullHouse: null,
-      chance: null,
-      yatzy: null
-    };
+  switch(scoreType) {
+    case 'ones':
+    case 'twos':
+    case 'threes':
+    case 'fours':
+    case 'fives':
+    case 'sixes':
+      for (let i = 0; i < game.dice.length; i++) {
+        if (game.dice[i] === scoreType) {
+          score += scoreType;
+        }
+      }
+      break;
+    case 'pair':
+      score = calculatePairScore(game);
+      break;
+    // Ajoutez d'autres types de score ici
   }
 
-  rollDices() {
-    for (const dice of this.dices) {
-      dice.roll();
-    }
-  }
-
-  calculateScore(game, scoreType) {
-    switch (scoreType) {
-      case "ones":
-        return this.dices.filter(dice => dice.value === 1).reduce((a, b) => a + b.value, 0);
-      case "twos":
-        return this.dices.filter(dice => dice.value === 2).reduce((a, b) => a + b.value, 0);
-      case "threes":
-        return this.dices.filter(dice => dice.value === 3).reduce((a, b) => a + b.value, 0);
-      case "fours":
-        return this.dices.filter(dice => dice.value === 4).reduce((a, b) => a + b.value, 0);
-      case "fives":
-        return this.dices.filter(dice => dice.value === 5).reduce((a, b) => a + b.value, 0);
-      case "sixes":
-        return this.dices.filter(dice => dice.value === 6).reduce((a, b) => a + b.value, 0);
-      default:
-        return 0;
-    }
-  }
-
-  updateGameScore(game) {
-    this.score.ones = this.calculateScore(game, "ones");
-    this.score.twos = this.calculateScore(game, "twos");
-    this.score.threes = this.calculateScore(game, "threes");
-    this.score.fours = this.calculateScore(game, "fours");
-    this.score.fives = this.calculateScore(game, "fives");
-    this.score.sixes = this.calculateScore(game, "sixes");
-
-    const total =
-      this.score.ones +
-      this.score.twos +
-      this.score.threes +
-      this.score.fours +
-      this.score.fives +
-      this.score.sixes;
-
-    if (total >= 63) {
-      this.score.bonus = 50;
-    }
-  }
+  return score;
 }
-module.exports = YatzyEngine;
+
+function calculatePairScore(game) {
+  let score = 0;
+  let count = {};
+
+  for (let i = 0; i < game.dice.length; i++) {
+    if (count[game.dice[i]]) {
+      count[game.dice[i]]++;
+    } else {
+      count[game.dice[i]] = 1;
+    }
+  }
+
+  for (let i = 6; i >= 1; i--) {
+    if (count[i] >= 2) {
+      score = i * 2;
+      break;
+    }
+  }
+
+  return score;
+}
+
+function updateGameScore(game) {
+  let totalScore = 0;
+  let upperSectionScore = 0;
+  let lowerSectionScore = 0;
+
+  for (let scoreType in game.scores) {
+    if (game.scores[scoreType] !== null) {
+      totalScore += game.scores[scoreType];
+      if (scoreType === 'ones' || scoreType === 'twos' || scoreType === 'threes' || scoreType === 'fours' || scoreType === 'fives' || scoreType === 'sixes') {
+        upperSectionScore += game.scores[scoreType];
+      } else {
+        lowerSectionScore += game.scores[scoreType];
+      }
+    }
+  }
+
+  if (upperSectionScore >= 63) {
+    totalScore += 50;
+  }
+
+  game.scores.totalScore = totalScore;
+  game.scores.upperSectionScore = upperSectionScore;
+  game.scores.lowerSectionScore = lowerSectionScore;
+}
+
