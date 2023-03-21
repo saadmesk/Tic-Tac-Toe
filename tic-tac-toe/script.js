@@ -108,3 +108,39 @@ btnRef.forEach((element) => {
 });
 // Enabling buttons/Disabling popup:
 window.onload = enableButtons;
+
+// POST request to add score
+const addScore = (name, score) => {
+    const xhttp = new XMLHttpRequest();
+    xhttp.open("POST", "api.php", true);
+    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhttp.send('action=addScore&name=${name}&score=${score}');
+    };
+    
+    // GET request to get leaderboard
+    const getLeaderboard = () => {
+    const xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+    if (this.readyState == 4 && this.status == 200) {
+    const leaderboard = JSON.parse(this.responseText);
+    // display leaderboard
+    }
+    };
+    xhttp.open("GET", "api.php?action=getLeaderboard", true);
+    xhttp.send();
+    };
+    
+    // Call addScore function when the game is over
+    const gameOver = () => {
+    disableButtons();
+    const winner = xTurn ? "O" : "X";
+    const loser = xTurn ? "X" : "O";
+    const score = count === 9 ? 0 : 1;
+    addScore(winner, score);
+    msgRef.textContent = count === 9 ? "It's a tie!" : '${winner} wins!';
+    };
+    
+    // Call getLeaderboard function when the page loads
+    window.onload = () => {
+    getLeaderboard();
+    };
